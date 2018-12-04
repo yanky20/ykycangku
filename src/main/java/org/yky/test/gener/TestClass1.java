@@ -2,8 +2,8 @@ package org.yky.test.gener;
 
 import org.yky.test.TestClass4;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * 关于重写形成内部类的研究
@@ -59,8 +59,32 @@ public class TestClass1 {
 //        System.out.println(c.aa + c.bb);
 //        System.out.println(d.aa + d.bb);
 //        d.abc();
-        TestClass1 t = new TestClass4();
-        System.out.println(t.aac + "" + t.bbc + t.aa + t.bb);
+//        String[] t1 = new String[4];
+//        t1[0] = "小明";
+//        t1[1] = "小明";
+//        t1[2] = "小刚";
+//        t1[3] = "小红";
+//        Set<String> t = new LinkedHashSet(Arrays.asList(t1));
+////        t.add("小明");
+////        t.add("小明");
+////        t.add("小刚");
+//        String spice = "!@#";
+//        System.out.println(removeRep(new String[] {"a","bb","a","小明","小刚","小明"}, spice));
+        StringBuffer b = new StringBuffer();
+        System.out.println(b.toString());
+    }
+
+    private static String removeRep(String[] rrsa, String spilce) {
+        Set<String> slist = new LinkedHashSet(Arrays.asList(rrsa));
+        StringBuffer sbf = new StringBuffer();
+        for (String rsa : slist) {
+            sbf.append(rsa);
+            sbf.append(spilce);
+        }
+        int lastL = spilce.length();
+        if (spilce.equals(sbf.substring(sbf.length() - lastL)))
+            return sbf.substring(0, sbf.length() - lastL);
+        else return sbf.toString();
     }
 
 }

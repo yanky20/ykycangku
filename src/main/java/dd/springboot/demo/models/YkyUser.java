@@ -1,5 +1,7 @@
 package dd.springboot.demo.models;
 
+import org.springframework.data.annotation.Id;
+
 import java.io.Serializable;
 
 public class YkyUser implements Serializable {

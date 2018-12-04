@@ -3,8 +3,10 @@ package org.yky.test.proxy;
 import java.lang.reflect.*;
 
 /**
- * Created by hp on 2018/8/8. 动态代理对象因为已经默认继承了Proxy类，所以无法直接继承Yky类，从而无法转型为Yky类并获取Yky的方法并通过反射调用，因此
+ * Created by hp on 2018/8/8. jdk动态代理对象因为已经默认继承了Proxy类，所以无法直接继承Yky类，从而无法转型为Yky类并获取Yky的方法并通过反射调用，因此
  * 只能退而求其次的实现Yky所有实现的接口，通过多态的方式调用并实现Yky重写某一个接口的方法，因此动态代理的实际被代理对象必须有实现接口;
+ * 非面向接口的动态代理，spring 是通过cglib处理字节码创造一个代理对象的子类实现的（因此代理对象不能是final）;比如
+ * ((YkyInterface1) Proxy.newProxyInstance(yh.getClass().getClassLoader(), ca1, yh)).a() 改为 ((Yky) Proxy.newProxyInstance(yh.getClass().getClassLoader(), ca1, yh)).a();
  * 动态代理实际上实现的是代理对象与被代理对象对应关系的解耦与乱序组合，代理对象不再需要写死代码来调用代理对象的方法
  */
 public class Yky implements YkyInterface, YkyInterface1 {

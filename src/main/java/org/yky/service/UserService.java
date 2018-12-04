@@ -4,11 +4,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import dd.springboot.demo.models.YkyUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.yky.dao.User;
+import org.yky.dao.YkyUserDao;
 
 @Service
 public class UserService {
@@ -16,7 +18,12 @@ public class UserService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private YkyUserDao ykyUserDao;
 
+    public YkyUser getUser(Integer uid) {
+        return ykyUserDao.getById(uid);
+    }
 
     public List<User> getList(){
         String sql = "select uid,name,sex   from yky_user";

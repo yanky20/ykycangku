@@ -35,9 +35,20 @@ spring:
 #  profiles: dev
 
   datasource:
-    url: jdbc:mysql://localhost:3306/ykytest
+    url: jdbc:mysql://localhost:3306/yky?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver
     # 使用druid数据源
     #type: com.alibaba.druid.pool.DruidDataSource
+
+  data:
+    spring:
+       data:
+            elasticsearch:
+                cluster-name: #默认为elasticsearch
+                cluster-nodes: 127.0.0.1:9300 #配置es节点信息，逗号分隔，如果没有指定，则启动ClientNode
+                properties:
+                    path:
+                      #logs: ./elasticsearch/log #elasticsearch日志存储目录
+                      #data: ./elasticsearch/data #elasticsearch数据存储目录
