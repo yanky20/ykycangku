@@ -5,7 +5,7 @@ package org.yky.alltest;
  */
 public enum Enum1 {
 
-    A(2, "asdas"), B(3, "dd"), C(4, "sad");
+    A(2, "哈哈"), B(3, "dd"), C(4, "sad");
     private final Integer key;
     private final String value;
 
