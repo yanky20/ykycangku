@@ -8,7 +8,13 @@ import net.sf.json.JSONObject;
  */
 public class Main {
     public static void main(String[] args){
-//        System.out.println(Enum1.A.getValue());
-        System.out.println(111);
+        Object1 o1;
+        Object2 o2 = new Object2();
+        o2.setAge(1);
+        o2.setHobby("唱歌");
+        o2.setName("yankaiyang");
+        o2.setSex(2);
+        o1 = (Object1) JSONObject.toBean(JSONObject.fromObject(o2), Object1.class);
+        System.out.println(o1.getAge());
     }
 }
