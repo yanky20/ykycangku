@@ -1,0 +1,13 @@
+@startuml
+autonumber "."
+participant Xxljob as xxl
+participant "fast-service" as fs
+participant operator as op
+
+xxl->fs:*[]扫描未完成
+activate fs
+fs->op:notifacation
+deactivate fs
+
+
+@endUml

@@ -1,0 +1,19 @@
+@startuml
+autonumber "."
+participant Bod
+
+group aa
+Bod->AA:hello
+activate Bod
+Bod->x Bod
+activate Bod #FFBBBB
+Bod->AA:hello2
+deactivate Bod
+end
+Bod-->CCC:aaa
+deactivate Bod
+
+CCC->Bod:123
+==bbb==
+ABC->Bod:asdasda
+@endUml

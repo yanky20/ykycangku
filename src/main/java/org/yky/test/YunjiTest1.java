@@ -9,14 +9,14 @@ import java.util.*;
 /**
  * Created by lenovo on 2018/11/23.
  */
-public class YunjiTest1 {
+public class aaaaTest1 {
     static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-    static final String url = "jdbc:mysql://yunjidevelop.mysql.rds.aliyuncs.com/yunjiomsordergeneral?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true";
-    static final String username = "yunjidevelop";
-    static final String password = "yunjidevelopIdc123";
-//    static final String url = "jdbc:mysql://yunjitest.mysql.rds.aliyuncs.com/yunjiomsordergeneral?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true";
-//    static final String username = "yunjidb";
-//    static final String password = "yunjiDb123";
+    static final String url = "jdbc:mysql://aaaadevelop.mysql.rds.aliyuncs.com/aaaaomsordergeneral?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true";
+    static final String username = "aaaadevelop";
+    static final String password = "aaaadevelopIdc123";
+//    static final String url = "jdbc:mysql://aaaatest.mysql.rds.aliyuncs.com/aaaaomsordergeneral?useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&autoReconnect=true";
+//    static final String username = "aaaadb";
+//    static final String password = "aaaaDb123";
     static final String table1 = "t_rg_goods_money";
     static final String table2 = "t_rg_goods_money_info";
     static final String table3 = "t_rg_order_note";

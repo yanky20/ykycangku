@@ -5,12 +5,17 @@ import java.sql.SQLException;
 import java.util.List;
 
 import dd.springboot.demo.models.YkyUser;
+import dd.springboot.demo.vo.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.yky.common.exception.BizErrorType;
+import org.yky.common.exception.BizException;
 import org.yky.dao.User;
 import org.yky.dao.YkyUserDao;
+import org.yky.util.handler.OtherEndPointExceptionHandler;
 
 @Service
 public class UserService {
@@ -20,6 +25,9 @@ public class UserService {
 
     @Autowired
     private YkyUserDao ykyUserDao;
+
+    @Autowired
+    private OtherEndPointExceptionHandler otherEndPointExceptionHandler;
 
     public YkyUser getUser(Integer uid) {
         return ykyUserDao.getById(uid);
@@ -40,4 +48,9 @@ public class UserService {
 
         });
     }
+
+    public ResponseEntity runExecption() {
+        throw new BizException(BizErrorType.ERROR_FAST_NOTIFICATION);
+    }
+
 }

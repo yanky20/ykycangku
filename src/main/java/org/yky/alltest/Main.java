@@ -1,11 +1,15 @@
 package org.yky.alltest;
 
 
+import com.google.common.base.Utf8;
 import net.sf.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -16,23 +20,15 @@ import java.util.stream.Stream;
  */
 public class Main {
 
+    private static AtomicInteger echoRetries = new AtomicInteger(1);
 
-    public static void main(String[] args){
-        Node a = new Node(null, 3);
-//        Node b = new Node(a, 2);
-//        Node b1 = new Node(b, 12);
-//        Node b2 = new Node(b1, 22);
-//        Node b3 = new Node(b2, 32);
-//        Node c = new Node(b3, 1);
 
-        Node shaobing = new Node(a, 0);
-
-        Node nd = shaobing;
-        printNode(nd);
-        System.out.println("1111");
-        nd = resetNode(nd);
-
-        printNode(nd);
+    public static void main(String[] args) throws Exception {
+       int a = 1;
+       switch (a) {
+           case 1 : throw new RuntimeException("");
+           default: throw new Exception("");
+       }
 
     }
 

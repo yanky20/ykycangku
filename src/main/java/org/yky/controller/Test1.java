@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import dd.springboot.demo.dao.YkyUserMapper;
 import dd.springboot.demo.models.YkyUser;
+import dd.springboot.demo.vo.ResponseEntity;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -13,12 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.yky.common.exception.BizException;
 import org.yky.dao.User;
 import org.yky.service.UserService;
-import org.yky.test.YunjiTest2;
+import org.yky.test.aaaaTest2;
 import org.yky.test.elasticsearch.ElasticsearchTest;
 import org.yky.util.exception.CommomException;
 
@@ -50,7 +53,7 @@ public class Test1 {
     Test2 conn;
 
     @Autowired
-    YunjiTest2 yunjiTest2;
+    aaaaTest2 aaaaTest2;
 
     @Autowired
     YkyUserMapper ym;
@@ -96,6 +99,14 @@ public class Test1 {
         throw new CommomException("俨俨俨");
     }
 
+    @RequestMapping("/exception/handler")
+    ResponseEntity exceHandler() {
+        logger.info("This is a debug message");
+
+        return userService.runExecption();
+    }
+
+
     @RequestMapping("/aop")
     public String testaop() {
         logger.info("This is a aop");
@@ -120,7 +131,7 @@ public class Test1 {
 //        y.setName("小严");
 //        y.setSex(1);
 //        ym.insert(y);
-        yunjiTest2.deepInsert();
+        aaaaTest2.deepInsert();
     }
 
     @RequestMapping("/bbb")
