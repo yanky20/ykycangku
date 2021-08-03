@@ -1,30 +1,11 @@
 package org.yky.alltest;
 
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.nio.ByteBuffer;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.Set;
-import com.google.common.base.Utf8;
-import net.sf.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by lenovo on 2018/12/4.
@@ -35,48 +16,42 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-       int a = 1;
-       switch (a) {
-           case 1 : throw new RuntimeException("");
-           default: throw new Exception("");
-       }
+        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1,
+                0L, TimeUnit.SECONDS,
+                new SynchronousQueue<>(), new ThreadFactory() {
 
-    }
+            private final AtomicInteger threadNumber = new AtomicInteger(1);
 
-    private static void printNode(Node nd) {
-        if (nd.next != null)
-            do {
-                nd = nd.next;
-                System.out.println(nd.value);
-            } while (nd.next != null);
-    }
-
-    private static Node resetNode(Node nd) {
-        Node dddd = null;
-        if (nd.next != null) {
-            while (nd.next != null) {
-                Node temp = dddd;
-                dddd = nd.next;
-                Node next = dddd.next;
-                dddd.next = temp;
-                nd.next = next;
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(r, "nonpmtasyncThread-" + threadNumber.getAndIncrement());
             }
-        }
-        Node shaobing = new Node();
-        shaobing.next = dddd;
-        return shaobing;
+        }, (r, executor) -> {
+            System.out.println("非业务线程池已满，将会拒绝线程");
+            // todo 告警
+        });
+        Runnable runnable = () -> {
+            try {
+                System.out.println("线程进来了");
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+        threadPoolExecutor.execute(runnable);
+        threadPoolExecutor.execute(runnable);
+
+
+        Thread.sleep(2000);
+        threadPoolExecutor.execute(runnable);
+        threadPoolExecutor.execute(runnable);
+        threadPoolExecutor.execute(runnable);
+
     }
 
-    public static class Node {
-        public Node next;
-        public int value;
+    static class Test {
+        public void aa() {
 
-        Node(Node next, int value) {
-            this.next = next;
-            this.value = value;
-        }
-
-        Node() {
         }
     }
 
