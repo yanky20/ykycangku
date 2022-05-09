@@ -1,11 +1,10 @@
 package org.yky.alltest;
 
 
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Stream;
 
 /**
  * Created by lenovo on 2018/12/4.
@@ -16,43 +15,12 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(1, 1,
-                0L, TimeUnit.SECONDS,
-                new SynchronousQueue<>(), new ThreadFactory() {
-
-            private final AtomicInteger threadNumber = new AtomicInteger(1);
-
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "nonpmtasyncThread-" + threadNumber.getAndIncrement());
-            }
-        }, (r, executor) -> {
-            System.out.println("非业务线程池已满，将会拒绝线程");
-            // todo 告警
-        });
-        Runnable runnable = () -> {
-            try {
-                System.out.println("线程进来了");
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        };
-        threadPoolExecutor.execute(runnable);
-        threadPoolExecutor.execute(runnable);
-
-
-        Thread.sleep(2000);
-        threadPoolExecutor.execute(runnable);
-        threadPoolExecutor.execute(runnable);
-        threadPoolExecutor.execute(runnable);
-
+        int a = 1 << 2;
+        int c = 1 << 1;
+        int b = 1;
+        System.out.println(a | b | c);
     }
 
-    static class Test {
-        public void aa() {
 
-        }
-    }
 
 }

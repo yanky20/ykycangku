@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "acquiring-recon-service" as rs #ffffff
+participant "acquiring-cm-service" as cm
+
+rs->cm++:对账取消case\nproductId、transactionDate、\ntxnTranType
+rs++
+cm->cm++--:根据productId、transactionDate、\ntxnTranType取消case
+cm->rs--:取消结果
+rs--
+
+@endUml

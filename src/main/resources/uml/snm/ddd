@@ -1,19 +1,26 @@
-@startuml
-autonumber "."
-participant Bod
+CHANNEL_SEQ
+PROXY_TYPE
+PROXY_ID
+PROFILE_TYPE
 
-group aa
-Bod->AA:hello
-activate Bod
-Bod->x Bod
-activate Bod #FFBBBB
-Bod->AA:hello2
-deactivate Bod
-end
-Bod-->CCC:aaa
-deactivate Bod
 
-CCC->Bod:123
-==bbb==
-ABC->Bod:asdasda
-@endUml
+
+PROCESSING_STATUS
+IS_SEABANK
+LINKED_BANK_ID
+LINKED_BANK
+LINKED_ACCT_NO
+LOOKUP_REF_NO
+
+
+LINKING_STATUS
+LINKED_ACCT_NO
+LINKED_BANK_ID
+LINKED_BANK
+NICKNAME
+
+
+LINKED_ACCT_NO
+LINKED_ACCT_NAME
+PERSON_NAME
+NICKNAME

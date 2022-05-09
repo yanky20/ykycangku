@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "router-service" as rs
+participant "fast-service" as fs
+participant "G3" as g3
+
+g3->fs:pacs008
+activate fs
+activate g3
+fs->>g3:pacs002
+deactivate g3
+
+alt ACTC
+fs->fs:srp 增加流程
+activate fs
+deactivate fs
+end
+
+fs->rs:后续记账流程
+activate rs
+deactivate rs
+deactivate fs
+
+
+@endUml

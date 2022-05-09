@@ -1,0 +1,42 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "xxljob" as xxl #ffffff
+participant "fast-service" as fs
+participant "payment-service" as rs
+
+xxl->fs:定时调度cut off日期job
+activate xxl
+deactivate xxl
+activate fs
+fs->rs:调用接口修改结算日期\n通道id
+activate rs
+rs-->>fs:return
+deactivate rs
+fs->rs:调用接口重置头寸\n通道id，流水号
+activate rs
+rs-->>fs:return
+deactivate fs
+deactivate rs
+deactivate fs
+
+
+
+@endUml

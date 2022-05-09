@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "payment-service" as ps #ffffff
+participant "fast-service" as fs
+participant "G3" as cas
+
+"ps"->fs:sign off请求
+activate ps
+activate fs
+fs->cas:admn.003
+activate cas
+fs-->>ps:返回处理中
+deactivate ps
+
+
+cas->>fs:admn.004
+deactivate cas
+fs->ps:回调通知结果\nresult
+activate ps
+deactivate ps
+deactivate fs
+
+
+
+@endUml

@@ -1,0 +1,69 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "router-service" as rs
+participant "fast-service" as fs
+
+rs->fs:转账流程完成
+activate rs
+deactivate rs
+activate fs
+fs->fs:srp --
+activate fs
+deactivate fs
+fs->fs:判断srpvalue是否超过下一个range的阈值
+activate fs
+deactivate fs
+alt 超过某个阈值
+fs->fs:判断srpvalue是否超过下一个range的阈值
+activate fs
+deactivate fs
+alt 超过阈值 lower
+fs->fs:warning
+activate fs
+deactivate fs
+fs->fs:修改srprange = lower
+activate fs
+deactivate fs
+end
+alt 超过阈值 higher
+fs->fs:warning
+activate fs
+deactivate fs
+fs->fs:修改srprange = higher
+activate fs
+deactivate fs
+end
+alt 超过阈值 stop
+fs->fs:warning
+activate fs
+deactivate fs
+fs->fs:修改srprange = stop
+activate fs
+deactivate fs
+fs->rs:修改fast通道active_flag = off
+activate rs
+deactivate rs
+end
+end
+
+deactivate fs
+
+@endUml

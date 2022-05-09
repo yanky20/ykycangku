@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "merchant-service" as ms
+participant "payment-service" as pt
+participant "core" as cr
+
+==落单==
+bc->ms++:充值订单\ncustomerVA\nmerchantId
+bc++
+
+ms->ms++--:落单
+
+ms-->>bc--:落单结果\ncontractId
+bc--
+
+==查单==
+bc->ms++:查单请求\nmerchantId
+bc++
+ms-->>bc--:查单结果\nmerchantId\n商户内部户
+bc--
+
+==充值==
+bc->ms++:充值转账\ncustomerAcct\nmerchantId
+bc++
+ms->ms++--:落单\nmerchantId\nacctNo
+ms-->>bc:转账中\nref
+bc--
+alt 客户为行内
+ms->cr++:核心记账\nacctNo\nseabank内部户
+cr-->>ms--:记账结果
+else 签户为行外
+ms->pt++:通道支付\ncontractId\n签约通道
+pt-->>ms--:支付结果
+end
+
+ms->bc++:结单通知\nref
+bc--
+ms--
+
+@endUml

@@ -1,0 +1,121 @@
+@startuml
+autonumber "."
+
+participant "CORE" as co
+participant FE as fe
+participant "IPS" as ips
+participant "OPS and Admin" as ops
+participant G3 as g3
+
+== 贷记往账 ==
+fe->ips:transfer request
+activate fe
+activate ips
+
+ips->ips:check if it is in stop level
+activate ips
+deactivate ips
+
+alt it is in stop level
+ips->ips:check if it is in stop level
+activate ips
+deactivate ips
+ips-->fe:reject
+end
+
+ips->ips:check if calculated amount will breach debit cap
+activate ips
+deactivate ips
+
+alt breach debit cap
+ips->ips:check if calculated amount will breach debit cap
+activate ips
+deactivate ips
+ips->ips:warning
+activate ips
+deactivate ips
+ips-->fe:reject
+end
+
+ips->ips:srp --
+activate ips
+deactivate ips
+ips->ips:check if amount will step over next level Threshold
+activate ips
+deactivate ips
+alt reach Threshold
+ips->ips:check if amount will step over next level Threshold
+activate ips
+deactivate ips
+alt reach lower
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to lower level
+activate ips
+deactivate ips
+end
+alt reach higher
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to higher level
+activate ips
+deactivate ips
+end
+alt reach stop
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to stop level
+activate ips
+deactivate ips
+ips->fe:make FAST unavailable
+end
+end
+
+ips->co:bookkeeping
+activate co
+deactivate co
+ips->g3:pacs008
+activate g3
+g3-->ips:pacs002
+
+alt transfer fail
+g3-->ips:pacs002 with RJCT
+ips->ips:srp ++
+activate ips
+deactivate ips
+ips->ips:check if srp will under previous level Threshold
+activate ips
+deactivate ips
+
+alt under previous level
+ips->ips:check if srp will under previous level Threshold
+activate ips
+deactivate ips
+alt begin with stop level
+ips->fe:make FAST available
+ips->ips:change status to previous level
+activate ips
+deactivate ips
+end
+alt begin with other level
+ips->ips:change status to previous level
+activate ips
+deactivate ips
+end
+end
+
+ips->co:reversal
+activate co
+deactivate co
+ips-->fe:reject
+end
+
+deactivate g3
+ips-->fe:ok
+
+
+
+@endUml

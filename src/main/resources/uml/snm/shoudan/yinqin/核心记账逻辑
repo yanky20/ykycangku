@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "通用收单处理引擎" as tl #FFFFFF
+participant "核心记账flow" as fl
+participant "core" as cr
+
+tl->>fl++:核心记账flow调用
+alt 手续费>0
+fl->fl++--:保存本金与手续费flow流水
+else 手续费=0
+fl->fl++--:保存本金flow流水
+end
+fl->fl++--:组装核心记账参数
+fl->cr++:记账请求
+cr-->>fl:记账结果
+fl->fl++--:更新flow为成功
+fl-->>tl:组件执行完成
+
+@endUml

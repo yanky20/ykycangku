@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "收单引擎模块" as sd #FFFFFF
+participant "flow模块" as fl
+
+activate fl
+fl->fl++--:查询配置
+
+loop
+fl->fl++--:创建flow
+fl->fl++--:同一area,productId,step分组，\n聚合所有amt_type到一个flow中
+fl->fl++--:放在flow池中，key为area,productId,step
+deactivate fl
+end
+==处理流程==
+sd->fl++:查询组件\narea,productId,step
+sd++
+fl->sd--:flow组件
+sd--
+
+
+@endUml

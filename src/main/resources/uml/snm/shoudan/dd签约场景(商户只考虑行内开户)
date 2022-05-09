@@ -1,0 +1,41 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "merchant-service" as ms
+participant "contract-service" as cs
+participant "payment-service" as pt
+
+==商户&客户签约/解约/修改/查询签约==
+bc->ms++:签约请求\ncustomerAcct\nmerchantId
+bc++
+
+ms->cs++:签约请求\ncustomerAcct\nmerchantId
+cs->cs++--:check\ncustomerAcct\nmerchantId
+
+cs-->>ms--:签约结果\ncontractId
+
+ms-->>bc--:签约结果\ncontractId
+bc--
+
+
+
+
+@endUml

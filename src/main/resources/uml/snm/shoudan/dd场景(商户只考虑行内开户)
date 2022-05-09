@@ -1,0 +1,61 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "merchant-service" as ms
+participant "contract-service" as cs
+participant "payment-service" as pt
+participant "core" as cr
+
+==查询签约==
+bc->ms++:查询签约请求\ncustomerAcct\nmerchantId
+bc++
+
+ms->cs++:查询签约请求\ncustomerAcct\nmerchantId
+cs-->>ms--:查询结果\ncontractId
+
+ms-->>bc--:查询结果\ncontractId
+bc--
+
+==DD代收==
+bc->ms++:DD转账\ncontractId\n订单id\ncustomerAcct
+bc++
+ms->cs++:查询签约信息\ncontractId
+cs-->>ms--:签约信息
+ms->ms++--:check
+ms->ms++--:落单\n订单id\nacctNo
+ms-->>bc:转账中\nref
+bc--
+alt 签约客户为行内
+ms->cr++:核心记账\nacctNo\nseabank内部户
+cr-->>ms--:记账结果
+else 签约客户为行外，暂不考虑
+ms->pt++:通道支付\ncontractId\n签约通道
+pt-->>ms--:支付结果
+end
+
+ms->bc++:结单通知\nref
+bc--
+ms--
+
+
+
+
+@endUml

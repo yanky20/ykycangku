@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "router-service" as rs
+participant "fast-service" as fs
+participant "G3" as g3
+
+g3->fs:camt056
+activate fs
+activate g3
+fs->fs:交易是否已经失败
+activate fs
+deactivate fs
+
+alt 交易已经失败
+fs->g3:camt029
+
+else 交易状态不是失败
+fs->fs:流水取消状态是否为初始值
+activate fs
+deactivate fs
+
+alt 流水取消状态不是初始值
+fs->g3:camt029
+
+else 流水取消状态是初始值
+fs->fs:router回调，修改流水状态
+activate fs
+deactivate fs
+fs->fs:srp 扣减流程
+activate fs
+deactivate fs
+fs->g3:camt029
+deactivate fs
+deactivate g3
+|||
+end
+end
+
+
+
+@endUml

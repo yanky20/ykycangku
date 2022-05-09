@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+actor "通道-service" as fs #FFFFFF
+participant "payment-service" as rs
+
+fs->rs:期末发起重置头寸请求\n通道id，流水号
+activate fs
+deactivate fs
+activate rs
+rs->rs:计算头寸到期初余额的差额 \n插入扣减 or 增加流水
+activate rs
+deactivate rs
+rs->rs:position value = init_balance \n protect level = 0
+activate rs
+deactivate rs
+opt
+deactivate rs
+
+
+
+@endUml

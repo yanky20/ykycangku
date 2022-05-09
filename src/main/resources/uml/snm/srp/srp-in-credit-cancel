@@ -1,0 +1,60 @@
+@startuml
+autonumber "."
+
+participant "CORE" as co
+participant FE as fe
+participant "IPS" as ips
+participant "OPS and Admin" as ops
+participant G3 as g3
+
+
+g3->ips:camt056
+activate g3
+activate ips
+ips-->g3:camt029
+deactivate g3
+ips->ips:srp --
+activate ips
+deactivate ips
+ips->ips:check if amount will step over next level Threshold
+activate ips
+deactivate ips
+alt reach Threshold
+ips->ips:check if amount will step over next level Threshold
+activate ips
+deactivate ips
+alt reach lower
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to lower level
+activate ips
+deactivate ips
+end
+alt reach higher
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to higher level
+activate ips
+deactivate ips
+end
+alt reach stop
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to stop level
+activate ips
+deactivate ips
+ips->fe:make FAST unavailable
+end
+ips->co:reversal
+activate co
+deactivate co
+end
+
+deactivate ips
+
+
+
+@endUml

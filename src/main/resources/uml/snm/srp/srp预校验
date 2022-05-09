@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "router-service" as rs
+participant "fast-service" as fs
+
+rs->fs:转账预校验请求
+activate rs
+activate fs
+fs->fs:srpvalue=stop？
+activate fs
+deactivate fs
+alt srpvalue=stop
+fs-->rs:return false
+end
+
+fs->fs:srpvalue + 转账金额 > 借记上限?
+activate fs
+deactivate fs
+alt srpvalue + 转账金额 > 借记上限
+fs-->rs:return false
+end
+
+
+fs-->rs:return true
+
+deactivate rs
+deactivate fs
+
+@endUml

@@ -1,0 +1,118 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "CORE" as co
+participant FE as fe
+participant "IPS" as ips
+participant "OPS and Admin" as ops
+participant G3 as g3
+
+== 贷记往账 ==
+fe->ips:transfer request
+activate fe
+activate ips
+
+ips->ips:check if it is in stop level \n or calculated amount will breach debit cap
+activate ips
+deactivate ips
+
+alt it is in stop level or breach debit cap
+ips-->fe:reject
+else srp check success
+ips->ips:srp --
+activate ips
+deactivate ips
+ips->ips:check if amount will step over next level Threshold
+activate ips
+deactivate ips
+alt reach lower
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to lower level
+activate ips
+deactivate ips
+else reach higher
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to higher level
+activate ips
+deactivate ips
+else reach stop
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to stop level
+activate ips
+deactivate ips
+ips->fe:make FAST-transfer unavailable（FE不可以选择FAST转账）
+end
+
+ips->co:bookkeeping
+activate co
+deactivate co
+
+ips->g3:pacs008
+activate g3
+deactivate g3
+end
+
+== 贷记往账响应 ==
+
+g3-->ips:pacs002
+activate g3
+deactivate g3
+
+alt transfer ACTC
+ips-->fe:ok
+
+else transfer RJCT
+ips->ips:srp ++
+activate ips
+deactivate ips
+ips->ips:check if srp will under previous level Threshold
+activate ips
+deactivate ips
+
+alt under previous level
+alt begin with stop level
+ips->ips:check if srp will under higher Threshold(借记srp小于80%)
+activate ips
+deactivate ips
+ips->fe:make FAST-transfer available
+ips->ips:change status to Corresponding level
+activate ips
+deactivate ips
+else begin with other level
+ips->ips:change status to Corresponding level
+activate ips
+deactivate ips
+end
+end
+
+ips->co:reversal
+activate co
+deactivate co
+ips-->fe:reject
+end
+
+
+@endUml

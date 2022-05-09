@@ -1,0 +1,79 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "router-service" as rs
+participant "fast-service" as fs
+participant "G3" as g3
+
+== 正常流程 ==
+
+g3->fs:pacs008
+activate fs
+activate g3
+fs->>g3:pacs002
+deactivate g3
+
+alt ACTC
+fs-> rs:srp 增加流程
+activate rs
+rs-->> fs:return
+fs->rs:核心记账
+rs-->> fs:return
+
+deactivate rs
+deactivate fs
+end
+== 增加失败流程 ==
+
+g3->fs:pacs008
+activate fs
+activate g3
+fs->>g3:pacs002
+deactivate g3
+
+alt ACTC
+fs-> rs:srp 增加流程
+activate rs
+rs-->> fs:return false
+fs->rs:???
+
+deactivate rs
+deactivate fs
+end
+== 正常流程 ==
+
+g3->fs:pacs008
+activate fs
+activate g3
+fs->>g3:pacs002
+deactivate g3
+
+alt ACTC
+fs->x rs:srp 增加流程
+activate rs
+fs->rs:???
+
+deactivate rs
+deactivate fs
+end
+
+
+
+@endUml

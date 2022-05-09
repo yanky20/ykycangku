@@ -1,0 +1,44 @@
+@startuml
+autonumber "."
+
+actor "FontEnd" as fe
+participant "IPS" as ips
+participant "OPS and Admin" as ops
+participant G3 as g3
+
+
+g3->ips:pacs008
+activate g3
+activate ips
+ips-->g3:pacs002
+deactivate g3
+ips->ips:credited srp on IPS
+activate ips
+deactivate ips
+g3->g3:credited seabank's srp on g3
+activate g3
+deactivate g3
+ips->ips:check if amount will lowered previous level Threshold(srp on IPS)
+activate ips
+deactivate ips
+alt reach lower level
+ips->ips:check if amount will lowered previous level Threshold(srp on IPS)
+activate ips
+deactivate ips
+alt begin with stop level
+ips->fe:show the options
+activate fe
+deactivate fe
+end
+alt begin with other level
+ips->ips:donothing
+activate ips
+deactivate ips
+end
+end
+
+deactivate ips
+
+
+
+@endUml

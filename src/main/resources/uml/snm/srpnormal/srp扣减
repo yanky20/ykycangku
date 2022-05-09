@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "通道service/渠道" as os #ffffff
+participant "payment-service" as rs
+
+os->rs:发起头寸扣减/增加\n通道Id，变更类型，变更金额，\n业务类型，业务流水号
+activate os
+deactivate os
+activate rs
+rs->rs:记录变更流水
+activate rs
+deactivate rs
+rs->rs:头寸变更
+activate rs
+deactivate rs
+opt 越过警戒阈值
+rs->>rs:告警
+activate rs
+deactivate rs
+end
+deactivate rs
+
+
+
+@endUml

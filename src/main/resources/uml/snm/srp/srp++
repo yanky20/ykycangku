@@ -1,0 +1,82 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+participant "fast-service" as fs
+
+activate fs
+fs->fs:srp++请求
+activate fs
+deactivate fs
+fs->fs:srp ++
+activate fs
+deactivate fs
+fs->fs:判断srpvalue是否降低至小于当前range的阈值
+activate fs
+deactivate fs
+alt 降低到当前阈值之下
+fs->fs:判断srpvalue是否降低至小于当前range的阈值
+activate fs
+deactivate fs
+alt 当前range = lower
+fs->fs:修改srprange = normal
+activate fs
+deactivate fs
+end
+alt 当前range = higher
+alt srpvalue > lowerthreshold 且 srpvalue < higherthreshold
+fs->fs:修改srprange = lower
+activate fs
+deactivate fs
+end
+alt srpvalue < lowerthreshold
+fs->fs:修改srprange = normal
+activate fs
+deactivate fs
+end
+end
+alt 当前range = stop
+alt srpvalue > higherthreshold 且 srpvalue < stopthreshold
+fs->fs:donothing
+activate fs
+deactivate fs
+end
+alt srpvalue > lowerthreshold 且 srpvalue < higherthreshold
+fs->fs:修改srprange = lower
+activate fs
+deactivate fs
+fs->rs:修改fast通道active_flag = on
+activate rs
+deactivate rs
+end
+alt srpvalue < lowerthreshold
+fs->fs:修改srprange = normal
+activate fs
+deactivate fs
+fs->rs:修改fast通道active_flag = on
+activate rs
+deactivate rs
+end
+
+
+end
+end
+
+deactivate fs
+
+@endUml

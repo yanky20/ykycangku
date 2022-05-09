@@ -1,14 +1,25 @@
 @startuml
 autonumber "."
 
-actor "FontEnd" as fe
 participant "IPS" as ips
 participant "OPS and Admin" as ops
 participant G3 as g3
 
-activate fe
-fe->ips:transfer request
+
+g3->ips:pacs003
 activate ips
+activate g3
+ips->ips:check if it is in stop level
+activate ips
+deactivate ips
+
+alt breach debit cap
+ips->ips:check if it is in stop level
+activate ips
+deactivate ips
+ips-->g3:pacs002 with 1261
+end
+
 ips->ips:check if amount will breach debit cap(debit cap on IPS)
 activate ips
 deactivate ips
@@ -20,56 +31,50 @@ deactivate ips
 ips->ips:warning
 activate ips
 deactivate ips
-ips-->fe:reject
+ips-->g3:pacs002 with 1261
 end
-ips->g3:pacs008
+
+ips-->g3:pacs002
+
+g3->g3:Debited seabank's srp on G3
 activate g3
-g3->g3:Debit seabank's srp on G3
-g3-->ips:pacs002
 deactivate g3
-ips->ips:Debit srp on IPS
+deactivate g3
+
+ips->ips:Debited srp on IPS
 activate ips
 deactivate ips
 ips->ips:check if amount will step over next level Threshold(srp on IPS)
 activate ips
 deactivate ips
+
 alt reach Threshold
 ips->ips:check if amount will step over next level Threshold(srp on IPS)
 activate ips
 deactivate ips
+
 alt reach lower
 ips->ips:warning
 activate ips
 deactivate ips
-ips-->fe:ok
 end
+
 alt reach higher
 ips->ips:warning
 activate ips
 deactivate ips
-ips-->fe:ok
 end
+
 alt reach stop
 ips->ips:warning
 activate ips
 deactivate ips
-ips-->fe:reject
-ips->fe:hide options
+ips->ips:change level to stop level
+activate ips
+deactivate ips
 end
-alt maybe options
-ops->ops:alert their Treasury department(if necessary)
-activate ops
-deactivate ops
-ops->g3:check the srp on G3(maybe)
-activate g3
 deactivate g3
-activate ops
-ops->ips:change the srp on FAST(maybe)
-deactivate ops
-end
-end
-
-ips-->fe:ok
+deactivate ips
 
 
 @endUml

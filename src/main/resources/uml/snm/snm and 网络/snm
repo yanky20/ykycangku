@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+autonumber "."
+actor "G3" as g3 #FFFFFF
+participant "fast-service" as fs
+
+g3->fs:admi.004.001.01 msg
+activate g3
+deactivate g3
+activate fs
+fs->fs:save msg
+activate fs
+deactivate fs
+fs->op:notification msg
+activate op
+deactivate op
+deactivate fs
+
+@endUml

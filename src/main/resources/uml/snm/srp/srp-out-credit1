@@ -1,0 +1,29 @@
+@startuml
+autonumber "."
+
+participant "CORE" as co
+participant FE as fe
+participant "router" as rt
+participant "passage" as pg
+
+== 贷记往账 ==
+fe->rt:转账请求
+rt->co:step1:本金记账
+rt->co:step2:手续费记账
+rt->pg:step3:通道记账
+rt->co:step4:通道费记账
+activate co
+deactivate co
+
+== 贷记往账srp ==
+fe->rt:转账请求
+rt->pg:step0:verify(srp)
+rt->co:step1:本金记账
+rt->co:step2:手续费记账
+rt->pg:step3:通道记账
+rt->co:step4:通道费记账
+activate co
+deactivate co
+
+
+@endUml

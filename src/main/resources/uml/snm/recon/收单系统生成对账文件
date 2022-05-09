@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "acquiring-recon-service" as cs
+participant "acquiring-service" as as
+participant "文件服务器" as ch
+
+cs->as++:开始获取收单对账文件\nsourceDate\ntaskRefNo\nproductId
+cs++
+as-->>cs:处理中
+cs--
+
+as->as++--:生成正向交易txn对账文件\nsourceDate
+as->ch++:上传对账文件
+ch-->>as--:上传成功
+
+as->as++--:生成正向交易flow对账文件\nsourceDate
+as->ch++:上传对账文件
+ch-->>as--:上传成功
+
+as->as++--:生成退款交易txn对账文件\nsourceDate-1
+as->ch++:上传对账文件
+ch-->>as--:上传成功
+
+as->as++--:生成退款交易flow对账文件\nsourceDate-1
+as->ch++:上传对账文件
+ch-->>as--:上传成功
+
+as->cs++:通过mq通知文件已准备完毕\ntxn文件列表\nflow文件列表\ntaskRefNo
+cs-->>as--:ack
+as--
+
+
+
+
+@endUml

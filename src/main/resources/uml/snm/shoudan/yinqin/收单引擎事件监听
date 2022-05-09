@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "处理引擎" as cl #FFFFFF
+participant "flow监听模块" as fl
+participant "txn监听模块" as tl
+
+cl->fl++:flow流水结束事件
+
+loop
+fl->fl++--:过滤需要监听的内容
+fl->fl++--:执行监听逻辑
+fl->fl++--:下一个监听者
+end
+
+== ==
+
+cl->tl++:txn流水结束事件
+
+loop
+tl->tl++--:过滤需要监听的内容
+tl->tl++--:执行监听逻辑
+tl->tl++--:下一个监听者
+end
+
+@endUml

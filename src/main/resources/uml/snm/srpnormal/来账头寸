@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "通道-service" as bc #ffffff
+participant "payment-service" as ps
+
+bc->ps:贷记来账请求\n转账金额，通道id，流水号
+activate ps
+activate bc
+
+ps-->>bc:返回处理中
+deactivate bc
+
+ps->ps:txn流转到成功
+activate ps
+deactivate ps
+
+ps->ps:头寸增加
+activate ps
+deactivate ps
+
+
+deactivate ps
+deactivate bc
+|||
+
+
+@endUml

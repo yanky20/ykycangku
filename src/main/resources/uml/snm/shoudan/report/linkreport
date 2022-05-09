@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "xxljob" as xxl #ffffff
+participant "merchant-service" as ms
+participant "文件服务器" as fs
+participant "MQ" as mq
+
+xxl->ms++:生成linkreport\nlinkDate
+xxl++
+xxl--
+ms->ms++--:获取要生成报表的产品_商户组合
+ms->ms++--:查询t_binding_log，并生成报表\nlinkDate\nmerchantCode\nproductId
+ms->fs:上传报表
+fs++
+fs--
+ms->mq:报表通知
+mq++
+mq--
+ms--
+
+@endUml

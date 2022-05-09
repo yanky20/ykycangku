@@ -1,0 +1,105 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "CORE" as co
+participant FE as fe
+participant "IPS" as ips
+participant "OPS and Admin" as ops
+participant G3 as g3
+
+== 贷记来账 ==
+
+g3->ips:pacs008
+activate g3
+activate ips
+ips-->g3:pacs002
+deactivate g3
+ips->ips:srp ++
+activate ips
+deactivate ips
+ips->ips:check if srp will under previous level Threshold
+activate ips
+deactivate ips
+
+alt under previous level
+alt begin with stop level
+ips->ips:check if srp will under higher Threshold(借记srp小于80%)
+activate ips
+deactivate ips
+ips->fe:make FAST-transfer available
+ips->ips:change status to Corresponding level
+activate ips
+deactivate ips
+else begin with other level
+ips->ips:change status to Corresponding level
+activate ips
+deactivate ips
+end
+end
+
+ips->co:bookkeeping
+activate co
+deactivate co
+deactivate ips
+
+== 贷记来账取消 ==
+
+g3->ips:camt056
+activate g3
+activate ips
+ips-->g3:camt029
+deactivate g3
+ips->ips:srp --
+activate ips
+deactivate ips
+ips->ips:check if amount will step over next level Threshold
+activate ips
+deactivate ips
+alt reach lower
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to lower level
+activate ips
+deactivate ips
+else reach higher
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to higher level
+activate ips
+deactivate ips
+else reach stop
+ips->ips:warning
+activate ips
+deactivate ips
+ips->ips:change status to stop level
+activate ips
+deactivate ips
+ips->fe:make FAST-transfer unavailable（FE不可以选择FAST转账）
+end
+
+ips->co:reversal
+activate co
+deactivate co
+
+deactivate ips
+
+@endUml

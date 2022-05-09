@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "acquiring-recon-service" as cs
+participant "acquiring-service" as as
+
+cs->as++:修改交易状态\ntxn流水号\nflowlist\n修改前后状态
+cs++
+as->as++--:校验txn与flow的数据正确性
+as->as++--:更新txn与flow的状态
+as-->>cs--:处理结果
+cs--
+
+@endUml

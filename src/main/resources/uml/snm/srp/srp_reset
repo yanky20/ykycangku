@@ -1,0 +1,30 @@
+@startuml
+skinparam monochrome true
+skinparam shadowing false
+
+skinparam participant {
+    borderColor orange
+}
+
+skinparam fe {
+    backgroundColor RosyBrown
+    padding 12
+}
+
+participant "fast-service" as fs
+
+activate fs
+fs->fs:srp reset
+activate fs
+deactivate fs
+fs->fs:修改srpvalue=0
+activate fs
+deactivate fs
+
+fs->fs:修改srprange=normal
+activate fs
+deactivate fs
+
+deactivate fs
+
+@endUml

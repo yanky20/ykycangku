@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "merchant-service" as ms
+participant "core" as cr
+
+bc->ms++:代付请求\n客户AcctNo\n商户No\n产品Id\n子产品Id\nbc流水号
+bc++
+ms->ms++--:收单校验
+
+alt 校验不通过
+ms-->>bc:拒绝原因\nerrorCode
+
+else 校验通过
+ms-->>bc:转账中
+bc--
+ms->cr++:核心记账\n客户AcctNo\n商户内部户
+cr-->>ms--:记账结果
+
+ms->bc++:交易结果推送\nbc流水号
+bc--
+ms--
+end
+
+
+
+@endUml

@@ -1,0 +1,35 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "收单接口" as sd #FFFFFF
+participant "处理引擎" as cl
+participant "flow模块" as fl
+
+sd->>cl++:收单通用处理\nproductId
+
+loop
+cl->fl++:查询flow\nproductId,area=当前area,step=1
+fl-->>cl--:返回flow组件
+cl->fl++:执行flow组件
+fl-->>cl--:执行结果
+cl->cl:step+1\n更新txn流水step
+end
+
+@endUml

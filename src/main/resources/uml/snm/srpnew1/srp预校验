@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "BC" as bc
+participant "payment-service" as ps
+
+activate ps
+ps->ps:srp扣减请求
+activate ps
+deactivate ps
+
+ps->ps:srp扣减请求
+activate ps
+deactivate ps
+ps->ps:转账参数校验流程
+activate ps
+deactivate ps
+
+ps->ps:srp检查（校验当前是否允许转账\n以及计算金额是否会超过借记上限）
+activate ps
+deactivate ps
+
+alt srp检查不通过
+ps-->>bc:return false
+|||
+
+else srp检查通过
+ps->ps:srp 扣减流程
+activate ps
+deactivate ps
+
+ps-->>bc:return true
+deactivate bc
+ps->co:落交易流水，核心记账
+activate co
+deactivate ps
+deactivate co
+|||
+
+end
+
+@endUml
