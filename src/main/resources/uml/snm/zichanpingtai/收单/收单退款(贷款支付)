@@ -1,0 +1,34 @@
+@startuml
+
+participant "Shopee" as sp
+participant "bankApi" as fe
+participant "BC" as bc
+participant "Acquiring" as acq
+participant "Anti-fraud" as af
+participant "PaymentBC" as ass
+participant "loanCore" as lc
+participant "casaCore" as core
+
+sp->fe:收单退款
+fe->bc:收单退款
+bc->af:反欺诈check
+af-->>bc:校验结果
+bc->acq:收单退款
+acq->acq:check原业务单
+acq->acq:落业务退款单
+acq->ass:退款
+ass->ass:落支付单
+ass->core:记账(商户内部户->贷款内部户)
+core-->>ass:记账结果
+ass->lc:记账(贷款内部户->用户贷款户)
+lc-->>ass:记账结果
+
+
+ass->ass:支付单完成
+ass->>acq:支付结果
+acq->acq:业务退款单完成
+acq->>bc:退款结果
+bc->>fe:退款结果
+fe->>sp:退款结果
+
+@endUml

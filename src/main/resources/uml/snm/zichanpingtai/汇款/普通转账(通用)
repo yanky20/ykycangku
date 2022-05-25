@@ -1,0 +1,96 @@
+@startuml
+
+participant FE
+participant FE
+participant BusinessBC
+participant AF
+participant PaymentBC
+Box "Core" #FFEFD5
+participant BusinessCore
+participant IPS
+participant CacsCore as Core
+end box
+
+==Payment method inquiry==
+FE->PaymentBC++: Retrieve information for payment methods
+activate FE
+group Retrieve information based on payment method(s)
+else Intrabank transfer
+PaymentBC->Core: Retrieve account information (balance, block code)
+activate Core
+Core-->PaymentBC: Return result
+deactivate Core
+else if Interbank transfer
+PaymentBC->IPS: Check channel and retrieve network limit
+activate IPS
+IPS-->PaymentBC: Return result
+deactivate IPS
+else if Paynow transfer
+PaymentBC->IPS: Check channel and retrieve network limit
+activate IPS
+IPS-->PaymentBC: Return result
+deactivate IPS
+else if Direct debit
+PaymentBC->IPS: Retrieve list of active contracts
+activate IPS
+IPS-->PaymentBC: Return list of active contracts
+deactivate IPS
+end
+PaymentBC->PaymentBC: Consolidate information
+PaymentBC-->FE--:Return information
+FE->FE: Display information to customer
+note over FE: Grey out/remove unavailable payment methods
+deactivate FE
+
+==Payment process==
+FE->FE: Use information for prechecks
+activate FE
+FE->FE: Perform business related prechecks
+FE->BusinessBC++: Proceed with payment methods
+BusinessBC->AF++: Validate AF rules
+AF->BusinessBC--: Return AF rules
+BusinessBC->FE: Prompt authorisation
+FE->BusinessBC:Complete and validated authorisation
+BusinessBC->BusinessBC: Create order
+
+group If business prefer business bookkeeping before payment
+BusinessBC -> BusinessCore++: Perform business bookkeeping
+BusinessCore --> BusinessBC--: Complete bookkeeping
+end group
+
+BusinessBC->PaymentBC++:Perform transaction, along with the AF
+PaymentBC->PaymentBC: Add a record
+Group Perform Transaction
+else Intrabank transfer
+PaymentBC->Core++: Perform intrabank bookkeeping
+Core-->PaymentBC--:Return result
+else Interbank transfer
+PaymentBC -> Core++: Perform interbank bookkeeping
+Core --> PaymentBC--: Return result
+deactivate Core
+PaymentBC->IPS++: Perform interbank bookkeeping
+IPS-->PaymentBC--:Return result
+deactivate IPS
+else Paynow transfer
+PaymentBC->PaymentBC: Generate Paynow QR String
+end
+
+group If business prefer business accout bookkeeping
+PaymentBC -> BusinessCore++: Perform business accout bookkeeping
+BusinessCore --> PaymentBC--: Complete bookkeeping
+end group
+
+PaymentBC-->BusinessBC: Return result
+deactivate PaymentBC
+
+group If business prefer business bookkeeping before payment
+BusinessBC -> BusinessCore++: finish business bookkeeping
+BusinessCore --> BusinessBC--: Complete
+end group
+
+BusinessBC->BusinessBC:Complete order
+BusinessBC-->FE: Display result
+deactivate FE
+deactivate BusinessBC
+
+@endUml

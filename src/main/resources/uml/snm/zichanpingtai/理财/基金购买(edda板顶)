@@ -1,0 +1,20 @@
+@startuml
+
+
+participant "FE" as fe
+participant "BC" as bc
+participant "PaymentBC" as ass
+participant "IPS" as ips
+participant "Passage" as pg
+
+fe->bc:绑定
+bc->ass:绑定
+ass->ips:跨行绑定
+ips->pg:跨行绑定
+pg->>ips:绑定结果
+ips->>ass:绑定结果
+ass->ass:保存绑定结果
+ass->>bc:绑定结果
+bc->>fe:绑定结果
+
+@endUml

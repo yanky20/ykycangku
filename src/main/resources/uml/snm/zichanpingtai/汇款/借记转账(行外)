@@ -1,0 +1,63 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "asset" as ass
+participant "pmt" as pmt
+participant "core" as core
+participant "passage" as pg
+
+== 改造前 ==
+bc->pmt:签约他行
+pmt->pg:签约
+pg-->>pmt:签约结果
+pmt-->>bc:签约结果
+
+bc->pmt:查询签约
+pmt-->>bc:签约结果
+
+bc->pmt:借记转账
+pmt->pg:通道记账
+pg->>pmt:记账结果
+pmt->core:记账
+core-->>pmt:记账结果
+pmt->>bc:转账结果
+
+== 改造后 ==
+bc->ass:签约他行\nbankcode
+ass->pmt:签约他行\nbankcode
+pmt->pg:签约
+pg-->>pmt:签约结果
+pmt-->>ass:签约结果
+ass-->>bc:签约结果
+
+bc->pmt:查询签约
+pmt-->>bc:签约结果
+
+bc->ass:借记转账
+ass->pmt:借记转账
+pmt->pg:通道记账
+pg->>pmt:记账结果
+pmt->>ass:记账结果
+ass->core:记账
+core-->>ass:记账结果
+ass->>bc:转账结果
+
+@endUml

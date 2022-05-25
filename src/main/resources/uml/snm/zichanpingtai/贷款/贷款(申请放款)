@@ -1,0 +1,41 @@
+@startuml
+
+participant "APP" as fe
+participant "LTS" as lts
+participant "Anti-fraud" as af
+participant "PaymentBc" as ass
+participant "loanCore" as lc
+participant "casaCore" as core
+
+fe->lts:贷款试算
+lts->af:反欺诈check
+af->lts:校验结果
+lts->lc:贷款试算
+lc-->>lts:试算结果
+lts-->>fe:试算结果
+
+fe->lts:放款申请
+lts->af:反欺诈check
+af-->>lts:校验结果
+
+lts->lts:落业务单
+lts->lc:记录单据
+lc-->>lts:记录结果
+
+lts->ass:放款申请
+ass->ass:落支付单
+ass->lc:记账(用户贷款户→贷款内部户)
+lc-->>ass:记账结果
+
+ass->core:记账(贷款内部户→客户存款账户)
+core-->>ass:记账结果
+ass->ass:支付单完成
+
+ass->>lts:支付结果
+
+lts->lc:支付结果通知
+lts->lts:业务单完成
+lts->>fe:放款结果
+
+
+@endUml

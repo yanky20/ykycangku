@@ -1,0 +1,51 @@
+@startuml
+
+participant "Shopee" as sp
+participant "bankApi" as bk
+participant "SDK" as fe
+participant "BC" as bc
+participant "Acquiring" as acq
+participant "Anti-fraud" as af
+participant "PaymentBC" as ass
+participant "loanCore" as lc
+participant "casaCore" as core
+
+sp->bk:预校验
+bk->bc:预校验
+bc->af:反欺诈check
+af->bc:校验结果
+bc->bc:token
+bc-->>bk:返回token
+bk->>sp:返回token
+
+sp->fe:通过token跳转链接
+fe->bc:请求支付类型
+bc->ass:请求支付类型(业务类型，客户账号等)
+ass->ass:检出支持的支付类型
+ass->ass:合并交易类型
+ass-->>bc:支付类型
+bc-->>fe:支付类型
+
+fe->bc:收单交易(代收)
+bc->af:反欺诈check
+af-->>bc:校验结果
+bc->acq:收单交易(代收)
+acq->acq:落业务单
+acq->ass:贷款支付
+ass->ass:落支付单
+ass->lc:记账(用户贷款户→贷款内部户)
+lc-->>ass:记账结果
+
+ass->core:记账(贷款内部户→商户内部户)
+core-->>ass:记账结果
+ass->ass:支付单完成
+
+ass->>acq:支付结果
+acq->acq:业务单完成
+acq->>bc:交易结果
+
+bc->>fe:交易结果
+fe->>sp:交易结果
+
+
+@endUml

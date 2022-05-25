@@ -1,0 +1,28 @@
+@startuml
+
+
+actor "BC" as bc #ffffff
+participant "pmt" as pmt
+participant "PaymentBC" as ass
+participant "ips" as ips
+participant "core" as core
+participant "passage" as pg
+
+
+bc->pmt:银行列表查询
+pmt-->>bc:银行列表
+bc->pmt:普通转账
+pmt->pmt:落txn
+pmt->ass:普通转账
+ass->ass:落支付单
+ass->core:记账
+core-->>ass:记账结果
+ass->ips:通道记账
+ips->pg:通道记账
+pg->>ips:记账结果
+ips->>ass:记账结果
+ass->>pmt:转账结果
+pmt->>bc:转账结果
+
+
+@endUml

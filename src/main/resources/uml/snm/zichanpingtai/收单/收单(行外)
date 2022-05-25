@@ -1,0 +1,54 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "acq" as acq
+participant "asset" as ass
+participant "pmt" as pmt
+participant "core" as core
+participant "passage" as pg
+
+== 改造前 ==
+bc->pmt:银行列表查询
+pmt-->>bc:银行列表
+bc->acq:收单交易(代收)\nbcrefno
+acq->pmt:普通转账
+pmt->core:记账
+core-->>pmt:记账结果
+pmt->pg:通道记账
+pg->>pmt:记账结果
+pmt->>acq:转账结果
+acq->>bc:支付结果
+
+== 改造后 ==
+bc->pmt:银行列表查询
+pmt-->>bc:银行列表
+bc->acq:收单交易(代收)\nbcrefno
+acq->ass:普通转账
+ass->core:记账
+core-->>ass:记账结果
+ass->pmt:通道记账
+pmt->pg:通道记账
+pg->>pmt:记账结果
+pmt->>ass:转账结果
+ass->>acq:转账结果
+acq->>bc:支付结果
+
+@endUml

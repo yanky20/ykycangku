@@ -1,0 +1,34 @@
+@startuml
+
+participant SPMandAPM
+participant SeaBank_APPandSDK
+participant Bank_API
+participant Business_Center
+participant Acquiring_System
+participant AntifraudandAuth
+participant PaymentBC
+participant CasaCore as Core_System
+
+
+SPMandAPM->Bank_API:call DD payment API
+Bank_API->Business_Center:call DD payment API
+Business_Center->AntifraudandAuth:call auth check and security check
+AntifraudandAuth-->Business_Center:check result, return auth requirements(Authflag)
+Business_Center->Business_Center:generate payment token,sdk url for auth
+Business_Center->Bank_API:return token, sdk url for auth...
+Bank_API->SPMandAPM:return token, sdk url for auth...
+SPMandAPM->SeaBank_APPandSDK:jump page
+SeaBank_APPandSDK->Business_Center:use token to check txn details
+Business_Center->AntifraudandAuth:auth check
+AntifraudandAuth-->Business_Center:auth result
+Business_Center->Acquiring_System:ask to do dd payment
+Acquiring_System->Acquiring_System:check contract
+Acquiring_System->PaymentBC:do dd payment
+PaymentBC->Core_System:bookkeeping
+Core_System-->PaymentBC:bookkeeping result
+PaymentBC->Acquiring_System:payment result
+Acquiring_System->Business_Center:update payment result
+Business_Center->Bank_API:send payment result to merchants
+Bank_API->SPMandAPM:update payment results
+
+@endUml

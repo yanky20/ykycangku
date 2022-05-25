@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+actor "BC" as bc #ffffff
+participant "loan" as la
+participant "asset" as ass
+participant "loan(loancore)" as lc
+participant "core" as core
+
+== 改造前 ==
+bc->la:贷款试算
+la->lc:贷款试算
+lc-->>la:试算结果
+la-->>bc:试算结果
+
+bc->la:申请还款\nbcrefno
+la->core:借客户账
+core-->>la:记账结果
+la->lc:贷贷款户
+lc-->>la:记账结果
+la-->>bc:还款结果
+
+== 改造后 ==
+bc->la:贷款试算
+la->lc:贷款试算
+lc-->>la:试算结果
+la-->>bc:试算结果
+
+bc->la:申请还款\nbcrefno
+la->ass:借客户账
+ass->core:借客户账
+core-->>ass:记账结果
+ass-->>la:记账结果
+la->lc:贷贷款户
+lc-->>la:记账结果
+la-->>bc:还款结果
+
+@endUml

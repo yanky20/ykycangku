@@ -1,0 +1,44 @@
+@startuml
+
+
+participant "APP" as fe
+participant "ITS" as its
+participant "AF" as rk
+participant "PaymentBC" as ass
+participant "IPS" as ips
+participant "CasaCore" as core
+participant "WMS(InvestmentsCore)" as wms
+participant "Passage" as pg
+
+fe->its:获取基金信息
+its->wms:获取基金信息
+wms-->>its:基金信息
+its-->>fe:基金信息
+
+fe->ass:获取支付方式
+ass->ass:根据产品，场景，用户加载对应的支付方式
+ass-->>fe:支付方式
+
+fe->its:购买基金
+its->rk:风控扫描
+rk-->>its:扫描结果
+its->its:落业务单
+its->wms:记录单据bizOrder
+wms-->>its:记录结果
+its->ass:edda支付请求
+ass->ass:落支付单
+ass->core:记账
+core-->>ass:记账结果
+ass->ips:通道转账
+ips->pg:通道转账
+pg-->ips:通道转账结果
+ips-->ass:通道转账结果
+ass->wms:Investments记账
+wms-->>ass:记账结果
+ass->ass:支付单完成
+ass->>its:支付结果
+its->wms:通知支付结果
+its->its:业务单完成
+its->>fe:购买结果
+
+@endUml

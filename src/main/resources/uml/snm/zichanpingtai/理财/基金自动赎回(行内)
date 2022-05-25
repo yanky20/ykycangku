@@ -1,0 +1,32 @@
+@startuml
+
+participant "ITS" as lts
+participant "PaymentBc" as ass
+participant "WMS(InvestmentsCore)" as lc
+participant "casaCore" as core
+
+lc->lc:自动赎回job
+lc->lts:自动赎回
+lts->lts:批量创建赎回业务单
+lts-->>lc:处理中
+
+loop 赎回申请
+lts->lc:记录单据bizOrder
+lc-->>lts:记录结果
+lts->ass:支付申请
+ass->ass:落支付单
+ass->lc:Investments记账
+lc-->>ass:记账结果
+ass->core:记账
+core-->>ass:记账结果
+ass->ass:支付单完成
+
+ass->>lts:支付结果
+lts->lc:通知支付结果
+
+lts->lts:业务单完成
+
+end
+
+
+@endUml

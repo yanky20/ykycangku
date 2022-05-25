@@ -1,0 +1,33 @@
+@startuml
+
+participant "LTS" as lts
+participant "PaymentBc" as ass
+participant "loanCore" as lc
+participant "casaCore" as core
+
+lc->lc:自动还款job
+lc->lts:自动还款
+lts->lts:批量创建还款业务单
+lts-->>lc:处理中
+
+loop 还款申请
+lts->ass:还款申请
+ass->ass:落支付单
+ass->core:记账(客户存款账户→贷款内部户)
+core-->>ass:记账结果
+
+ass->lc:记账(贷款内部户→用户贷款户)
+lc-->>ass:记账结果
+ass->ass:支付单完成
+
+ass->>lts:支付结果
+
+lts->lc:处理单据
+lc-->>lts:处理结果
+
+lts->lts:业务单完成
+
+end
+
+
+@endUml

@@ -1,0 +1,16 @@
+@startuml
+
+actor "BC" as bc #ffffff
+participant "pmt" as pmt
+participant "PaymentBC" as ass
+participant "core" as core
+
+
+bc->pmt:普通转账
+pmt->ass:普通转账
+ass->core:记账
+core-->>ass:记账结果
+ass-->>pmt:记账结果
+pmt->>bc:转账结果
+
+@endUml
