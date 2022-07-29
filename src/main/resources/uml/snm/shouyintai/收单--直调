@@ -1,0 +1,36 @@
+@startuml
+
+
+participant "SHOPEE" as sp
+participant "SeabankSDK" as sdk
+participant "bankApi" as ba
+participant "BC" as bc
+participant "Cashier" as ca
+participant "AF" as af
+participant "Acquiring" as acq
+participant "IPS" as ips
+participant "Core" as core
+
+sp->ba:支付请求
+ba->bc:支付请求
+bc->af:反欺诈校验
+af-->bc:校验结果
+bc->bc:生成token与跳转url
+bc-->ba:token,sdk url
+ba-->sp:token,sdk url
+
+sp->sdk:open sdk url\ntoken
+
+
+sdk->sdk:user auth
+sdk->bc:check token
+bc->sdk:check result
+sdk->bc:支付请求
+bc->acq:支付请求
+acq->core:记账
+core-->acq:记账结果
+acq-->bc:支付结果
+bc-->sdk:支付结果
+sdk-->sp:支付结果
+
+@endUml

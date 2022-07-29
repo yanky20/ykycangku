@@ -1,0 +1,20 @@
+@startuml
+
+participant "loanCore" as lc
+participant "IPS" as core
+
+lc->lc:自动还款job
+lc->lc:捞起bill
+lc->lc:批量还款
+loop 还款申请
+
+lc->core:跨行记账(客户edda绑定账户→贷款内部户)
+core-->>lc:记账结果
+
+lc->lc:处理bill
+lc->lc:还款完成
+
+end
+
+
+@endUml

@@ -1,0 +1,27 @@
+@startuml
+
+
+participant "APP" as fe
+participant "BC" as bc
+participant "pbs" as pbs
+participant "IPS" as ips
+participant "PASSAGE" as pg
+participant "CasaCore" as core
+
+fe->fe:选择行内转账
+fe->bc:转账请求
+bc->bc:bc各类处理
+bc->pbs:行内支付请求\npayer\npayee
+pbs->pbs:落支付单
+pbs->ips:跨行支付请求
+ips->core:通道记账
+core-->>ips:通道记账结果
+ips->pg:清算类请求
+pg-->>ips:清算请求响应
+ips->>pbs:记账结果
+pbs->pbs:支付单完成
+
+pbs->>bc:支付结果
+bc->>fe:通知支付结果
+
+@endUml

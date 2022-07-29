@@ -1,0 +1,20 @@
+@startuml
+
+participant "WMS" as wms
+participant "casaCore" as core
+
+wms->wms:自动赎回job
+wms->wms:捞起单据
+wms->wms:批量赎回
+loop 赎回申请
+
+wms->core:记账
+core-->>wms:记账结果
+
+wms->wms:处理单据
+wms->wms:赎回完成
+
+end
+
+
+@endUml

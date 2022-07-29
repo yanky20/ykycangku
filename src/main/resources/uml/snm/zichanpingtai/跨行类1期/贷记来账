@@ -1,0 +1,26 @@
+@startuml
+participant Shopee_APP
+participant Shopee_Order
+participant SPM
+participant SeaBank_APP
+participant Bank_API
+participant Business_Center
+participant User_Center
+participant AntifraudandAuth
+participant Acquiring_System
+participant Loan_System
+
+Shopee_APP->Shopee_Order:1.user want to refund the order
+Shopee_Order->SPM:2.inform SPM order need to do refund, update the status
+SPM->Bank_API:3.call refund api to inform Maribank
+Bank_API->Business_Center:4.need to refund an order
+Business_Center->AntifraudandAuth:5.do regular checking
+AntifraudandAuth-->Business_Center:6.return checking results
+Business_Center->Acquiring_System:7.need to do an order refund, only successfully paid order can do refund.
+Acquiring_System->Loan_System:8.inform loan that the order need to do refund
+Loan_System-->Acquiring_System:9.return refund results
+Acquiring_System-->Business_Center:10.return refund results
+Business_Center->SeaBank_APP:11.txn status update
+Business_Center-->Shopee_APP:12.refund results
+
+@endUml

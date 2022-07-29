@@ -3,26 +3,33 @@
 participant "PMT" as pmt
 participant "PaymentBc" as ass
 participant "IPS" as ips
-participant "loanCore" as lc
 participant "casaCore" as core
 participant "passage" as pg
 
-pg->ips:跨行来账
+pg->ips:跨行来账\ninstrid
 ips->ips:根据账户pattern匹配收款人类型\n来账类型个人存款户
-ips->pmt:跨行来账
+ips->pmt:跨行来账\ninstrid
 pmt->pmt:落txn
-pmt->ass:跨行来账
+pmt->ass:跨行来账\ninstrid
 ass->ass:落支付单
 ass->core:预校验
 core-->>ass:预校验结果
-ass->ips:通道记账响应
-ips->pg:通道记账响应
+alt 预校验成功
+ass->ips:通道记账响应\ninstrid
+ips->pg:通道记账响应\ninstrid
 ass->core:记账
 core-->>ass:记账结果
 
+else 预校验失败
+
+ass->ips:通道记账响应(失败)\ninstrid
+ips->pg:通道记账响应(失败)\ninstrid
+
+end
+
 ass->ass:支付单完成
-pmt->pmt:txn完成
 ass->>pmt:转账结果
+pmt->pmt:txn完成
 
 
 

@@ -1,0 +1,50 @@
+@startuml
+
+
+participant "SHOPEE" as sp
+participant "SeabankSDK" as sdk
+participant "bankApi" as ba
+participant "BC" as bc
+participant "Cashier" as ca
+participant "AF" as af
+participant "Acquiring" as acq
+participant "IPS" as ips
+
+sp->sp:唤起收银台
+sp->ba:获取支付方式
+ba->ca:获取支付方式
+ca->ca:根据商户，产品加载对应的支付渠道
+ca->acq:查询客户支持的代收协议
+acq-->>ca:客户的支付类型
+ca->ca:组合支付方式
+ca-->>ba:支付方式
+note right
+这里返回内容为
+1.支持行内支付，跨行支付与贷款支付
+2.客户相关的协议id
+end note
+ba-->>sp:支付方式
+
+sp->sp:选择某个跨行绑定作为支付方式，确认支付
+
+sp->ba:支付请求\n跨行代收协议id
+ba->bc:支付请求
+bc->af:反欺诈校验
+af-->bc:校验结果
+bc->bc:生成token与跳转url
+bc-->ba:token,sdk url
+ba-->sp:token,sdk url
+
+sp->sdk:open sdk url\ntoken
+sdk->sdk:输入密码
+sdk->bc:check token
+bc->sdk:check result
+sdk->bc:支付请求
+bc->acq:支付请求
+acq->ips:记账
+ips-->acq:记账结果
+acq-->bc:支付结果
+bc-->sdk:支付结果
+sdk-->sp:支付结果
+
+@endUml

@@ -1,0 +1,69 @@
+@startuml
+
+
+participant "APP" as fe
+participant "ITS" as its
+participant "pbs" as pbs
+participant "Cashier" as ass
+participant "AF" as af
+participant "IPS" as ips
+participant "CasaCore" as core
+participant "WMS(InvestmentsCore)" as wms
+participant "Passage" as pg
+
+fe->its:获取基金信息
+its->wms:获取基金信息
+wms-->>its:基金信息
+its-->>fe:基金信息
+
+fe->its:购买基金
+its->af:反欺诈扫描
+af-->>its:校验结果
+its->its:落业务单
+its->wms:记录单据
+wms-->>its:记录结果
+its-->>fe:下单完成\n反欺诈token
+
+fe->fe:唤起收银台
+
+fe->ass:获取支付方式
+ass->ass:根据产品，场景，用户加载对应的支付方式
+ass->ips:查询用户的edda协议
+ips-->>ass:用户的edda协议信息
+ass->core:查询用户余额
+core-->>ass:用户余额信息
+ass-->ass:组合支付方式
+ass-->>fe:支付方式
+note right
+这里返回内容为
+1.支持行内支付与跨行支付与paynow支付
+2.存款账户的信息与edda协议信息
+end note
+
+fe->its:选择paynow支付
+its->af:反欺诈token校验
+af-->>its:校验结果
+its->pbs:paynow支付请求
+pbs->pbs:落支付单
+pbs->pbs:生成qrCode
+pbs-->>its:返回qrcode
+its-->>fe:qrcode
+fe->fe:用户使用他行app扫码
+
+pg->ips:paynow转账
+ips->ips:根据账号匹配，账户类型为基金内部户
+ips->pbs:冻结业务支付单
+pbs->pbs:冻结业务单
+pbs-->>ips:冻结result
+ips->ips:完成通道记账流程
+ips-->pg:通道转账确认
+ips->>pbs:推送结果
+pbs->pbs:支付单完成
+pbs->its:支付单完成通知
+its->wms:通知支付结果
+its->its:业务单完成
+
+its->fe:购买结果
+
+
+@endUml

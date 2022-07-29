@@ -1,0 +1,54 @@
+@startuml
+
+
+participant "APP" as fe
+participant "ITS" as its
+participant "Cashier" as ass
+participant "AF" as af
+participant "IPS" as ips
+participant "CasaCore" as core
+participant "WMS(InvestmentsCore)" as wms
+
+fe->its:获取基金信息
+its->wms:获取基金信息
+wms-->>its:基金信息
+its-->>fe:基金信息
+
+fe->its:购买基金
+its->af:反欺诈扫描
+af-->>its:校验结果
+its->its:落业务单
+its->ass:生成token
+ass-->>its:token
+its-->>fe:下单完成\ntoken
+
+
+fe->fe:唤起收银台
+
+fe->ass:获取支付方式
+ass->ass:根据产品，场景，用户加载对应的支付方式
+ass->ips:查询用户的edda协议
+ips-->>ass:用户的edda协议信息
+ass->core:查询用户余额
+core-->>ass:用户余额信息
+ass-->ass:组合支付方式
+ass-->>fe:支付方式
+
+fe->fe:选择支付方式，输入密码
+fe->ass:check token
+ass-->>fe:check result
+
+fe->ass:edda支付请求
+ass->ass:落支付单
+ass->core:记账
+core-->>ass:记账结果
+ass->ips:跨行转账
+ips-->ass:跨行转账结果
+
+ass->ass:支付单完成
+ass->>its:支付结果
+its->wms:通知支付结果
+its->its:业务单完成
+its->>fe:购买结果
+
+@endUml

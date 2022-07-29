@@ -1,55 +1,35 @@
 @startuml
-skinparam backgroundColor #ffffff
-skinparam style strictuml
-skinparam Padding      2
-skinparam ParticipantPadding    15
-skinparam sequenceMessageAlign center
-skinparam sequence {
-ArrowColor black
-ActorBorderColor black
-LifeLineBorderColor black
-LifeLineBackgroundColor #ffffff
-LifeLineBorderThickness 1
-ParticipantBorderThickness 1
-ParticipantBorderColor black
-ParticipantBackgroundColor #ffffff
-ParticipantFontName Helvetica
-ParticipantFontSize 14
-ParticipantFontColor black
-}
 
-actor "BC" as bc #ffffff
-participant "loan" as la
-participant "asset" as ass
-participant "loan(loancore)" as lc
-participant "core" as core
+participant "APP" as fe
+participant "LTS" as lts
+participant "Anti-fraud" as af
+participant "PaymentBc" as ass
+participant "loanCore" as lc
+participant "casaCore" as core
 
-== 改造前 ==
-bc->la:贷款试算
-la->lc:贷款试算
-lc-->>la:试算结果
-la-->>bc:试算结果
 
-bc->la:申请还款\nbcrefno
-la->core:借客户账
-core-->>la:记账结果
-la->lc:贷贷款户
-lc-->>la:记账结果
-la-->>bc:还款结果
+fe->lts:还款申请
+lts->af:反欺诈check
+af-->>lts:校验结果
 
-== 改造后 ==
-bc->la:贷款试算
-la->lc:贷款试算
-lc-->>la:试算结果
-la-->>bc:试算结果
+lts->lts:落业务单
+lts->lc:记录单据
+lc-->>lts:记录结果
 
-bc->la:申请还款\nbcrefno
-la->ass:借客户账
-ass->core:借客户账
+lts->ass:还款申请
+ass->ass:落支付单
+ass->core:记账(客户存款账户→贷款内部户)
 core-->>ass:记账结果
-ass-->>la:记账结果
-la->lc:贷贷款户
-lc-->>la:记账结果
-la-->>bc:还款结果
+ass->lc:记账(贷款内部户→用户贷款户)
+lc-->>ass:记账结果
+
+ass->ass:支付单完成
+
+ass->>lts:支付结果
+
+lts->lc:支付结果通知
+lts->lts:业务单完成
+lts->>fe:放款结果
+
 
 @endUml

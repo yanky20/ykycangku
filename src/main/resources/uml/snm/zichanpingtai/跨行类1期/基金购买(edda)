@@ -1,0 +1,57 @@
+@startuml
+
+participant Shopee_APP
+participant Shopee_Account
+participant SPM
+participant SeaBank_APP
+participant Bank_API
+participant Business_Center
+participant User_Center
+participant AntifraudandAuth  
+participant Acquiring_System
+participant Core_System
+
+Shopee_APP->Shopee_APP:1.users click entrance to trigger linkage flow
+Shopee_APP->SPM:2.open marketing page, users confirm data sharing and confirm liankge activation
+SPM->Shopee_Account:3.ask for necessary shopee user info
+Shopee_Account-->SPM:4.return
+SPM->Bank_API:5.ask for token generation, pass all necessary user info for linkage and get deeplink
+Bank_API->Business_Center:6.ask for token generation, pass all necessary user info for linkage
+Business_Center->AntifraudandAuth:7.do regular checking for linkage
+AntifraudandAuth-->Business_Center:8.return checking result
+Business_Center->Business_Center:9.generate token,add deeplink
+Business_Center-->Bank_API:10.return token and deeplink
+Bank_API-->SPM:11.return token and deeplink
+SPM->Shopee_APP:12.pass token and deeplink
+Shopee_APP->SeaBank_APP:13.use deeplink to start linkage flow
+SeaBank_APP->Business_Center:14.pass token and check it is ok for linkage
+Business_Center-->SeaBank_APP:15.return seabank users status and checking results
+SeaBank_APP->User_Center:16.do login
+User_Center-->SeaBank_APP:17.return login status
+SeaBank_APP->Business_Center:18:token inquiry, check and parsing
+Business_Center->User_Center:19.call for seabank phonenumber, seabankuid
+User_Center-->Business_Center:20.return phonenumber, seabankuid
+Business_Center->Core_System:21.call for customerid, account no
+Core_System-->Business_Center:22.return customerid, account no
+Business_Center-->SeaBank_APP:23.return all required info
+SeaBank_APP->SeaBank_APP:24.show linakge realted info to users
+SeaBank_APP->SeaBank_APP:25.users confirm the account linkage
+SeaBank_APP->Business_Center:26.confirm linkage  
+Business_Center->AntifraudandAuth:27.call authentication
+AntifraudandAuth-->Business_Center:28.do authentication
+Business_Center-->SeaBank_APP:29.do authentication
+SeaBank_APP->Business_Center:30.pass auth results, do account binding
+Business_Center->Business_Center:31.check token, auth results
+Business_Center-->SeaBank_APP:32.show auth results
+Business_Center->AntifraudandAuth:33.check the liankge is valid or not
+AntifraudandAuth-->Business_Center:34.return checking results
+Business_Center->User_Center:35.call account binding api (with all necessary info) -- for B1
+User_Center-->Business_Center:36.return binding results
+Business_Center->Acquiring_System:37.Call account binding api (with all necessary info) -- for B2
+Acquiring_System-->Business_Center:38.return results
+Business_Center-->SeaBank_APP:39.return results
+Business_Center-->AntifraudandAuth:40.submit liankge results
+Business_Center->SPM:41.send linkage results and required data
+SPM->Shopee_APP:42.align the linkage status
+
+@enduml

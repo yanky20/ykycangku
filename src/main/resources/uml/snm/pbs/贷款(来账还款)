@@ -1,0 +1,17 @@
+@startuml
+
+participant "IPS" as ips
+participant "loanCore" as lc
+participant "passage" as pg
+
+pg->ips:跨行来账\n单据id
+ips->ips:根据账户pattern匹配收款人类型\n来账类型为贷款户
+ips->lc:冻结相应单据\n单据id
+lc->lc:冻结相应单据
+lc-->>ips:冻结结果
+ips->ips:完成通道记账流程
+ips->pg:通道转账结果
+ips->lc:推送结果
+
+
+@endUml

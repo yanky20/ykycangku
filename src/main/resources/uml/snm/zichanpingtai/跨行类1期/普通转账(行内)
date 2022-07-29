@@ -1,0 +1,59 @@
+@startuml
+participant Shopee_APP
+participant SPM
+participant SeaBank_APP
+participant Bank_API
+participant Business_Center
+participant User_Center
+participant AntifraudandAuth
+participant Acquiring_System
+participant Loan_System
+
+Shopee_APP->Shopee_APP:1.users enter MPP Checkout page
+Shopee_APP->SPM:2.Check Maricrdit Liankge status
+alt no linkage
+    Shopee_APP->Shopee_APP:3.a.show button to encourage users do maricredit liankge
+else has liankge
+    Shopee_APP->SPM:3.b.call SPM to do Maricredit payment inquiry
+    SPM->Bank_API:4.do Maricredit payment inquiry
+    Bank_API->Business_Center:5.do Maricredit payment inquiry
+    Business_Center->AntifraudandAuth:6.call antifraud check for payment inquiry
+    AntifraudandAuth-->Business_Center:7.check result
+    Business_Center->Acquiring_System:8.do Maricredit payment inquiry
+    Acquiring_System->Loan_System:9.do Maricredit payment inquiry
+    Loan_System-->Acquiring_System:10.return payment data
+    Acquiring_System-->Business_Center:11.return payment data
+    Business_Center-->Bank_API:12.return payment data
+    Bank_API-->SPM:13.return payment data
+    SPM-->Shopee_APP:14.show Maricredit payment methods
+    Shopee_APP->SPM:15.users pick payment methods and do payment
+    SPM->Bank_API:16.call payment init API
+    Bank_API->Business_Center:17.call payment init API
+    Business_Center->AntifraudandAuth:18.call auth check and security check
+
+    alt high risk payment
+        AntifraudandAuth-->Business_Center:19.a check result, return auth requirements-Need APP Jump verification.
+        Business_Center->Business_Center:20.a.generate payment token, need to jump to Maribank APP
+        Business_Center-->Bank_API:21.a.return token and deeplink to do app jump verification
+        Bank_API-->SPM:22.areturn token and deeplink to do app jump verification
+    else low risk payment
+        Business_Center->Business_Center:19.b.generate payment token,H5 link for OTP auth
+        Business_Center->Bank_API:20.b.return token, H5 link for OTP auth
+        Bank_API->SPM:21.b.return token, H5 link for OTP auth
+    end
+    SPM->Shopee_APP:22.return token, link for auth...
+    Shopee_APP->SeaBank_APP:23.open link to do auth
+    SeaBank_APP->Business_Center:24.use token to check txn details
+    Business_Center->AntifraudandAuth:25.auth check
+    AntifraudandAuth-->Business_Center:26.auth result
+    Business_Center->Acquiring_System:27.ask to do checkout
+    Acquiring_System->Acquiring_System:28.check linkage
+    Acquiring_System->Loan_System:29.do checkout, freeze the loan
+    Loan_System-->Acquiring_System:30.return payment result
+    Acquiring_System->Business_Center:31.update payment result
+    Business_Center->Bank_API:32.send payment result to merchants
+    Bank_API->SPM:33.update payment results
+    SPM->Shopee_APP:34.update payment result
+   Business_Center->SeaBank_APP:35.update payment result
+
+@endUml

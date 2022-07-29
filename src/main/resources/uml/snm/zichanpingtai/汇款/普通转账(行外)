@@ -12,9 +12,9 @@ participant "passage" as pg
 bc->pmt:银行列表查询
 pmt-->>bc:银行列表
 bc->pmt:普通转账
-pmt->pmt:落txn
+pmt->pmt:产品，通道，渠道等各类校验
 pmt->ass:普通转账
-ass->ass:落支付单
+ass->ass:落汇款类型的支付单
 ass->core:记账
 core-->>ass:记账结果
 ass->ips:通道记账

@@ -1,0 +1,35 @@
+@startuml
+skinparam backgroundColor #ffffff
+skinparam style strictuml
+skinparam Padding      2
+skinparam ParticipantPadding    15
+skinparam sequenceMessageAlign center
+skinparam sequence {
+ArrowColor black
+ActorBorderColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor #ffffff
+LifeLineBorderThickness 1
+ParticipantBorderThickness 1
+ParticipantBorderColor black
+ParticipantBackgroundColor #ffffff
+ParticipantFontName Helvetica
+ParticipantFontSize 14
+ParticipantFontColor black
+}
+
+participant "pbs-buiness-service" as api
+participant "pbs-service" as pbs
+participant "IPS" as ips
+participant "MQ" as mq
+
+api->pbs++:跨行转账请求\npayer\npayee\nclientRef\nproductId\nbankCode\npassageCode
+api++
+pbs->pbs++--:新增txn记录
+pbs-->>api:处理中
+api--
+pbs->ips++:跨行转账请求
+ips->>pbs--:转账结果
+pbs->mq:推送动账通知
+
+@endUml

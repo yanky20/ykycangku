@@ -1,0 +1,18 @@
+@startuml
+
+
+actor "User" as us
+participant "业务系统/商户" as bs
+participant "Cashier" as ca
+participant "core" as core
+
+us->bs:订单
+ba->bc:支付请求
+bc->af:反欺诈校验
+af-->bc:校验结果
+bc->bc:生成token与跳转url(banksdk中收银台的url)
+bc-->ba:token,sdk url
+ba-->sp:token,sdk url
+
+
+@endUml

@@ -1,0 +1,43 @@
+@startuml
+
+
+participant "SHOPEE" as sp
+participant "SeabankSDK" as sdk
+participant "bankApi" as ba
+participant "BC" as bc
+participant "Cashier" as ca
+participant "AF" as af
+participant "Acquiring" as acq
+participant "IPS" as ips
+participant "Core" as core
+
+sp->ba:支付请求
+ba->bc:支付请求
+bc->af:反欺诈校验
+af-->bc:校验结果
+bc->bc:生成token与跳转url(banksdk中收银台的url)
+bc-->ba:token,sdk url
+ba-->sp:token,sdk url
+
+sp->sdk:open sdk url\ntoken
+sdk->ca:获取支付方式
+ca->ca:根据产品，场景，用户加载对应的支付方式
+ca->ips:查询用户的edda协议
+ips-->>ca:用户的edda协议信息
+ca->core:查询用户余额
+core-->>ca:用户余额信息
+ca-->ca:组合支付方式
+ca-->>sdk:支付方式
+
+sdk->sdk:选择支付方式后输入密码
+sdk->bc:check token
+bc->sdk:check result
+sdk->bc:支付请求
+bc->acq:支付请求
+acq->core:记账
+core-->acq:记账结果
+acq-->bc:支付结果
+bc-->sdk:支付结果
+sdk-->sp:支付结果
+
+@endUml

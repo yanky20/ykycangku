@@ -1,0 +1,59 @@
+@startuml
+
+
+participant "APP" as fe
+participant "ITS" as its
+participant "pbs" as pbs
+participant "Cashier" as ass
+participant "AF" as af
+participant "IPS" as ips
+participant "CasaCore" as core
+participant "WMS(InvestmentsCore)" as wms
+
+fe->its:获取基金信息
+its->wms:获取基金信息
+wms-->>its:基金信息
+its-->>fe:基金信息
+
+fe->its:购买基金
+its->af:反欺诈扫描
+af-->>its:校验结果
+its->its:落业务单
+its->wms:落业务单据
+wms-->>its:落单完成
+its-->>fe:下单完成\n反欺诈token
+
+fe->fe:唤起收银台
+
+fe->ass:获取支付方式
+ass->ass:根据产品，场景，用户加载对应的支付方式
+ass->ips:查询用户的edda协议
+ips-->>ass:用户的edda协议信息
+ass->core:查询用户余额
+core-->>ass:用户余额信息
+ass-->ass:组合支付方式
+ass-->>fe:支付方式
+note right
+这里返回内容为
+1.支持行内支付与跨行支付
+2.存款账户的信息与edda协议信息
+end note
+
+
+fe->fe:选择某个edda协议，输入密码
+fe->its:跨行支付请求\n反欺诈token\nedda协议id
+its->af:验证反欺诈信息
+af-->>its:验证反欺诈信息
+its->pbs:跨行支付请求\nedda协议id
+pbs->pbs:落支付单
+pbs->ips:跨行支付请求\nedda协议id
+ips-->>pbs:支付结果
+pbs->pbs:支付单完成
+
+pbs-->its:支付结果
+its->wms:通知支付结果
+
+its->its:业务单完成
+its->>fe:购买结果
+
+@endUml

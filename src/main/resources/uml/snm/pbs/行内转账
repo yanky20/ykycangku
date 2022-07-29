@@ -1,0 +1,25 @@
+@startuml
+
+
+participant "APP" as fe
+participant "BC" as bc
+participant "pbs" as pbs
+participant "IPS" as ips
+participant "CasaCore" as core
+
+fe->fe:选择行内转账
+fe->bc:转账初始化请求
+bc-->>fe:tranId
+
+fe->bc:转账请求
+bc->bc:bc各类处理
+bc->pbs:行内支付请求\npayer\npayee
+pbs->pbs:落支付单
+pbs->core:记账请求
+core-->>pbs:记账结果
+pbs->>pbs:支付单完成
+
+pbs->>bc:支付结果
+bc->fe:通知支付结果
+
+@endUml

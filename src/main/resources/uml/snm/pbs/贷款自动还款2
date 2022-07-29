@@ -1,6 +1,7 @@
 @startuml
 
 participant "LTS" as lts
+participant "pbs" as pbs
 participant "loanCore" as lc
 participant "casaCore" as core
 
@@ -12,11 +13,14 @@ lts-->>lc:处理中
 
 loop 还款申请
 
-lts->core:记账(客户存款账户→贷款内部户)
-core-->>lts:记账结果
+lts->pbs:记账请求(客户存款账户→贷款内部户)
+pbs->pbs:落支付单
+pbs->core:记账(客户存款账户→贷款内部户)
+core-->>pbs:记账结果
+pbs->pbs:支付单完成
+pbs-->>lts:记账结果
 
 lts->lc:处理bill
-lc->lc:同步分录
 lc-->>lts:处理结果
 
 lts->lts:业务单完成

@@ -1,26 +1,11 @@
-CHANNEL_SEQ
-PROXY_TYPE
-PROXY_ID
-PROFILE_TYPE
-
-
-
-PROCESSING_STATUS
-IS_SEABANK
-LINKED_BANK_ID
-LINKED_BANK
-LINKED_ACCT_NO
-LOOKUP_REF_NO
-
-
-LINKING_STATUS
-LINKED_ACCT_NO
-LINKED_BANK_ID
-LINKED_BANK
-NICKNAME
-
-
-LINKED_ACCT_NO
-LINKED_ACCT_NAME
-PERSON_NAME
-NICKNAME
+803002   not support
+803012   retry strategy config not_exist
+803014   add case repeat fail
+803019   update run tag fail
+803500   update db fail
+803501   invoke remote fail %s
+803502   core verify fail
+803504   the transaction has been reversed
+803505   invoke case error
+803506   notify case result error
+803508   case reach retry limit
